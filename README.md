@@ -1,4 +1,4 @@
-# MyCoTe_Python
+# CodeIN_Python
 ### 2025학년도 2학기 파이썬 프로젝트입니다
 
 ## 라이브러리
