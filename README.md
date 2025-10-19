@@ -6,6 +6,6 @@
 2. mysqlclient
 
 ## 실행 방법
-1. ```cd MyCoTe_Back```
+1. ```cd CodeIN```
 2. ```python manage.py runserver```
 3. 웹 브라우저로 ```localhost:8000``` 접속

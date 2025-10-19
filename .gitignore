@@ -1,5 +1,5 @@
 .venv
-MyCoTe_Back/MyCoTe_Back/mysettings.py
+./CodeIN/CodeIN/mysettings.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -208,3 +208,4 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+/CodeIN/CodeIN/mysettings.py
