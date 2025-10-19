@@ -1,3 +1,6 @@
+.venv
+MyCoTe_Back/MyCoTe_Back/mysettings.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

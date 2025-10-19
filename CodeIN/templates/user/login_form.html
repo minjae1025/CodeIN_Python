@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form_container">
+    <form method="post">
+        {% csrf_token %}
+        {% include "user/form_errors.html" %}
+        <table>
+                <tr>
+                    <td>아이디</td>
+                    <td><input type="text" name="username" id="id"></td>
+                </tr>
+                <tr>
+                    <td>비밀번호</td>
+                    <td><input type="password" name="password" id="pass"></td>
+                </tr>
+        </table>
+        <input type="submit" class="btn" value="로그인">
+    </form>
+</div>
+{% endblock %}
