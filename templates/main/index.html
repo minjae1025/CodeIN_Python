@@ -1,0 +1,53 @@
+<!-- index.html -->
+{% extends 'base.html' %}
+
+{% block title %}CodeIN{% endblock %}
+
+{% block extrahead %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css"/>
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.16.2/min/vs/loader.js"></script>
+{% endblock %}
+
+{% block content %}
+<header class="masthead">
+    {% if user.is_authenticated %}
+    <p>안녕하세요, {{ user.nickname }}님!</p>
+    <a href="user/mypage">마이페이지</a>
+    <a href="user/logout">로그아웃</a>
+    {% else %}
+    <a href="user/login/">로그인</a>
+    <a href="user/sign_up/">회원가입</a>
+    {% endif %}
+</header>
+
+<div id="monaco" style="height:100vh"></div>
+
+<script>
+    let editor;
+
+    require.config({paths: {'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.16.2/min/vs'}});
+    require(['vs/editor/editor.main'], function () {
+        editor = monaco.editor.create(document.getElementById('monaco'), {
+            theme: 'vs-dark',
+            fontFamily: 'Nanum Gothic Coding',
+            fontSize: '18px',
+            automaticLayout: true,
+            language: 'python',
+            quickSuggestions: true,
+            wordWrap: 'on',
+            minimap: {
+                enabled: false // 코드 전체를 보여주는 미니맵 활성화
+            },
+            value: [
+                'def solution(a, b):',
+                '    # 여기에 코드를 작성하세요',
+                '    answer = 0',
+                '    return answer'
+            ].join('\n')
+        });
+    });
+</script>
+{% endblock %}
