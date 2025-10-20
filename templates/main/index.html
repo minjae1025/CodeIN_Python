@@ -12,19 +12,9 @@
 {% endblock %}
 
 {% block content %}
-<header class="masthead">
-    {% if user.is_authenticated %}
-    <p>안녕하세요, {{ user.nickname }}님!</p>
-    <a href="user/mypage">마이페이지</a>
-    <a href="user/logout">로그아웃</a>
-    {% else %}
-    <a href="user/login/">로그인</a>
-    <a href="user/sign_up/">회원가입</a>
-    {% endif %}
-</header>
-
-<div id="monaco" style="height:100vh"></div>
-
+<main>
+<div id="monaco" style="height:90vh"></div>
+</main>
 <script>
     let editor;
 
