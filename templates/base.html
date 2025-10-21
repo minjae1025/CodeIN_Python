@@ -5,8 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}CodeIN{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
 
     {% block extrahead %}{% endblock %}
@@ -15,7 +14,7 @@
 <header>
     <div class="header_container">
         <div class="header_logo">
-            <a href="/">CodeIN</a>
+            <a href="/">CODEIN</a>
         </div>
         <div class="header_menu">
             {% if user.is_authenticated %}

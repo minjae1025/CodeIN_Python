@@ -7,6 +7,8 @@ header {
     right: 0;
     background-color: #121212;
     width: 100%;
+    z-index: 1000;
+    padding: 0 10px;
 }
 
 .header_container {
@@ -16,10 +18,12 @@ header {
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
+    /*z-index: 1000;*/
 }
 
-main {
+body {
     padding-top: 80px;
+    background-color: #242424;
 }
 
 .header_logo {

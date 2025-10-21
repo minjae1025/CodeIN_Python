@@ -1,0 +1,65 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
+
+main {
+    font-family: "Pretendard", system-ui;
+    background-color: #242424;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.form_container {
+    height: calc(100vh - 80px);
+    position: relative;
+    top: 50%;
+}
+
+.form_title {
+    margin-top: 15vh;
+}
+
+.form_title p {
+    text-align: center;
+}
+
+.form {
+    color: #f9f9f9;
+    padding: 40px;
+    border: 1px solid lightgray;
+    border-radius: 10px;
+
+    width: 500px;
+}
+
+.form_table {
+    display: block;
+    border-collapse: separate;
+    border-spacing: 10px;
+}
+
+.login_btn {
+    width: 100%;
+    background-color: #363636;
+    color: #f9f9f9;
+}
+
+.form_input tr {
+    height: 100%;
+}
+
+.form_table th {
+    display: block;
+    text-align: left;
+    height: 100%;
+    font-weight: 600;
+}
+
+#id, #pass {
+    background-color: #363636;
+}
+
+.form_title p {
+    color: #f9f9f9;
+    font-size: 48px;
+}
