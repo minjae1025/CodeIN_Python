@@ -1,20 +1,29 @@
 {% extends "base.html" %}
+{% load static %}
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'css/user/login.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="form_container">
-    <form method="post">
-        {% csrf_token %}
+<main>
+    <div class="form_container">
+        <div class="form_title">
+            <p>로그인</p>
+        </div>
         {% include "user/form_errors.html" %}
-        <table>
-                <tr>
-                    <td>아이디</td>
-                    <td><input type="text" name="username" id="id"></td>
-                </tr>
-                <tr>
-                    <td>비밀번호</td>
-                    <td><input type="password" name="password" id="pass"></td>
-                </tr>
-        </table>
-        <input type="submit" class="btn" value="로그인">
-    </form>
-</div>
+        <form method="post" class="form">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">아이디</label>
+                <input type="text" name="username" class="form-control" id="id">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">비밀번호</label>
+                <input type="password" name="password" class="form-control" id="pass">
+            </div>
+            <input type="submit" class="login_btn btn" value="로그인">
+        </form>
+    </div>
+</main>
+
 {% endblock %}
