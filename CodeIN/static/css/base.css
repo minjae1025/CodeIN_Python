@@ -14,7 +14,7 @@ header {
 .header_container {
     height: 80px;
     width: 100%;
-    max-width: 1250px;
+    max-width: 1200px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
@@ -24,6 +24,7 @@ header {
 body {
     padding-top: 80px;
     background-color: #242424;
+    height: 100vh;
 }
 
 .header_logo {
@@ -53,5 +54,11 @@ body {
     margin-left: 10px;
     text-decoration: none;
     color: #f9f9f9;
+}
+
+@media (max-width: 1200px) {
+    main {
+        padding: 0 5px;
+    }
 }
 

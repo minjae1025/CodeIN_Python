@@ -1,24 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 main {
-    font-family: 'Pretendard', system-ui;
     background-color: #242424;
 }
 
 .title_container {
     text-align: center;
-    color: #f9f9f9;
     padding: 20px;
 }
 
 .title_text {
+    color: #f9f9f9;
     font-family: "Press Start 2P", system-ui;
     font-size: 92px;
     font-weight: bold;
     animation: slideUp 1s ease-in-out 0.5s forwards;
     position: relative; /* z-index를 적용하기 위해 필수 */
     margin: 0;
-    letter-spacing : 10px;
+    letter-spacing: 10px;
 }
 
 @keyframes slideUp {
@@ -38,3 +37,39 @@ main {
     font-size: 36px;
 }
 
+.main_container {
+
+}
+
+.show_question_count {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.go_test_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.show_question_count p {
+    color: #f9f9f9;
+    margin: 0;
+}
+
+.go_test_container button {
+    margin-top: 10px;
+    width: 200px;
+    height: 50px;
+    border: 1px solid #e1e1e1;
+    border-radius: 5px;
+    background: #444444;
+    color: #fff;
+}
+
+main {
+    font-family: 'Pretendard', system-ui;
+    background-color: #242424;
+    height: 100%;
+}

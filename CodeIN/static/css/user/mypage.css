@@ -5,61 +5,59 @@ main {
     justify-content: center;
     align-items: center;
     display: flex;
-    /*height: calc(100vh - 80px);*/
 }
 
 body {
    background-color: #242424;
 }
 
-.form_container {
+.container {
     position: relative;
     top: 50%;
 }
 
-.form_title {
-    margin-top: 15vh;
+.mypage_title {
+    margin-top: 8vh;
 }
 
-.form_title p {
+.mypage_title p {
     text-align: center;
     color: #f9f9f9;
     font-size: 48px;
 }
 
-.form {
+.mypage_content{
     color: #f9f9f9;
-    padding: 40px;
     border: 1px solid lightgray;
     border-radius: 10px;
     width: 500px;
 }
 
-.form_table {
-    display: block;
-    border-collapse: separate;
-    border-spacing: 10px;
-}
-
-.form_button {
-    margin-top: 10px;
-    width: 100%;
-    background-color: #464646;
+.form-control {
+    background-color: #363636;
     color: #f9f9f9;
 }
 
-.form_input tr {
-    height: 100%;
+.form-control:focus {
+    background-color: #565656;
+    color: #fff;
 }
 
-.form_table th {
-    display: block;
-    text-align: left;
-    height: 100%;
-    font-weight: 600;
+.back_btn {
+    padding: 5px 20px;
+    border: 0px;
+    border-radius: 10px 0px 10px 0px;
+    background-color: #464646;
+    color: #fff;
 }
 
-.form-control {
-    background-color: #363636;
+.mypage_info {
+    padding: 40px 40px 40px 40px;
+}
+
+.edit_btn {
+    margin-top: 10px;
+    width: 100%;
+    background-color: #464646;
     color: #f9f9f9;
 }

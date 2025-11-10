@@ -10,7 +10,6 @@
         <div class="form_title">
             <p>로그인</p>
         </div>
-        {% include "user/form_errors.html" %}
         <form method="post" class="form">
             {% csrf_token %}
             <div class="mb-3">
@@ -21,8 +20,9 @@
                 <label class="form-label">비밀번호</label>
                 <input type="password" name="password" class="form-control" id="pass">
             </div>
-            <input type="submit" class="login_btn btn" value="로그인">
+            <input type="submit" class="form_button btn btn-secondary" value="로그인">
         </form>
+        {% include "user/form_errors.html" %}
     </div>
 </main>
 
