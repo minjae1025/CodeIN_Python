@@ -54,12 +54,13 @@ main {
     color: #f9f9f9;
 }
 
-.example-label {
-    font-size: 16px;
+.exam-label {
+    margin: 2px;
+    font-size: 18px;
     color: #f9f9f9;
 }
 
-.example_container {
+#exams_container {
     border: 1px solid #888888;
     border-radius: 5px;
     padding: 10px;
@@ -67,16 +68,22 @@ main {
     display: grid;
 }
 
-.example_btn_container {
+.exam_fields {
+    border: 1px solid #888888;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.exam_btn_container {
     display: flex;
 }
 
-.example_btn {
+.exam_btn {
     display: inline-block;
     width: 100%;
 }
 
-.example_btn button {
+.exam_btn button {
     width: 100%;
 }
 
@@ -87,11 +94,15 @@ main {
 }
 
 .form_input:focus {
-    background: #666666;
+    background: #222222;
     border: 1px solid #888888;
     box-shadow: 0 0 0 1px #888888;
 }
 
 .form_input:enabled {
     color: #f9f9f9;
+}
+
+.form_input::placeholder {
+    color: #888888;
 }

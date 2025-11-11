@@ -16,37 +16,38 @@
     </div>
     <div class="form_container">
         <form method="post">
+            {% csrf_token %}
             <div class="mb-3">
                 <label for="title" class="form-label">제목</label>
-                <input type="text" class="form-control form_input" id="title" name="title" maxlength="100" required>
+                <input type="text" class="form-control form_input" id="title" name="title" maxlength="100" required
+                       placeholder="예) 원하는 숫자 찾기">
                 <div class="form-text">제목은 100자 이내입니다.</div>
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">설명</label>
-                <textarea type="text" class="form-control form_input" id="description" name="description" required></textarea>
+                <textarea type="text" class="form-control form_input" id="description" name="description"
+                          required placeholder="예) 다음 배열에서 주어진 n의 갯수를 반환하시오." rows="10"></textarea>
             </div>
-            <div class="mb-3">
-                <label for="example_container" class="form-label">예제 입출력</label>
-                <div id="example_container" class="example_container">
-                    <div class="example_input">
-                        <label class="example-label">입력</label>
-                        <input type="text" class="form-control" id="example_input" name="example_input" required>
-                    </div>
-                    <div class="example_output">
-                        <label class="example-label">출력</label>
-                        <input type="text" class="form-control" id="example_output" name="example_output" required>
-                    </div>
-
+            <div class="mb-3 examples_container">
+                <label for="exams_container" class="form-label">예제 입출력</label>
+                <div id="exams_container">
                 </div>
-                <div class="example_btn_container">
-                    <div class="example_btn">
+                <div class="exam_btn_container">
+                    <div class="exam_btn">
                         <button onclick="example_add()" class="button" type="button">예제 추가</button>
                     </div>
-                    <div class="example_btn">
-                        <button onclick="example_add()" class="button" type="button">예제 삭제</button>
+                    <div class="exam_btn">
+                        <button onclick="example_remove()" class="button" type="button">예제 삭제</button>
                     </div>
                 </div>
             </div>
+            <div class="mb-3">
+                <label for="conditions_container" class="form-label">예제 조건</label>
+                <div id="conditions_container">
+                    <textarea name="conditions" id="conditions_input" class="form-control form_input" rows="5" onchange="set_conditions(this.value)"></textarea>
+                </div>
+            </div>
+
             <div class="mb-3">
                 <label class="form-label">난이도</label>
                 <select class="form-select form_input" id="difficulty" name="difficulty" required>
@@ -59,14 +60,74 @@
             </div>
             <div class="mb-3">
                 <button class="button" type="submit">완료</button>
-                <button class="button" type="reset">초기화</button>
+                <button class="button" type="reset" onclick="input_reset()">초기화</button>
             </div>
         </form>
     </div>
 </main>
+<!--<input placeholder="">-->
 <script>
-    function example_add() {
+    let examples = [];
+    let example_count = 0;
+    let conditions = [];
 
+    const exams_container = document.getElementById('exams_container');
+    const conditions_input = document.getElementById('conditions_input');
+    conditions_input.placeholder = "예)\nn은 1 이상의 정수입니다\nlist는 2차원 리스트입니다.";
+
+    function input_reset() {
+        examples = [];
+        example_count = 0;
+        conditions = [];
+        exams_container.innerHTML = '';
+        example_add();
     }
+
+    function set_conditions(value) {
+        conditions = value.split("\n");
+        console.log(conditions);
+    }
+
+    function update_example(index, field, value) {
+        examples[index][field] = value;
+
+        // For debugging, you can see the updated arrays in the console
+        // console.log('Examples:', examples);
+    }
+
+    function example_add() {
+        const index = example_count;
+        const new_example_pair = document.createElement('div');
+        new_example_pair.classList.add('exam-pair');
+        new_example_pair.innerHTML = `
+            <label class="exam-label">예제 ${index + 1}</label>
+            <div class="exam_fields">
+                <div class="exam_input">
+                    <label class="exam-label">입력</label>
+                    <textarea class="form-control form_input" name="exam_input" required onchange="update_example(${index}, 'input', this.value)" placeholder="예) n = 2\nlist = [[1, 2], [2, 4]]" required></textarea>
+                </div>
+                <div class="exam_output">
+                    <label class="exam-label">출력</label>
+                    <textarea class="form-control form_input" name="exam_output" required onchange="update_example(${index}, 'output', this.value)" placeholder="2" required></textarea>
+            </div>
+        `;
+        exams_container.appendChild(new_example_pair);
+
+        examples.push({input: '', output: ''});
+        example_count++;
+
+        // console.log('Examples:', examples);
+    }
+
+    function example_remove() {
+        if (exams_container.children.length > 0) {
+            exams_container.removeChild(exams_container.lastElementChild);
+            examples.pop();
+            example_count--;
+        }
+    }
+
+    // Add one example field by default
+    example_add();
 </script>
 {% endblock %}
