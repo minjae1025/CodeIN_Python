@@ -15,7 +15,7 @@
         <p>문제 만들기</p>
     </div>
     <div class="form_container">
-        <form method="post">
+        <form method="post" onsubmit="return on_submit_handler(event);">
             {% csrf_token %}
             <div class="mb-3">
                 <label for="title" class="form-label">제목</label>
@@ -44,7 +44,8 @@
             <div class="mb-3">
                 <label for="conditions_container" class="form-label">예제 조건</label>
                 <div id="conditions_container">
-                    <textarea name="conditions" id="conditions_input" class="form-control form_input" rows="5" onchange="set_conditions(this.value)"></textarea>
+                    <textarea name="conditions" id="conditions_input" class="form-control form_input" rows="5"
+                              onchange="set_conditions(this.value)"></textarea>
                 </div>
             </div>
 
@@ -65,7 +66,6 @@
         </form>
     </div>
 </main>
-<!--<input placeholder="">-->
 <script>
     let examples = [];
     let example_count = 0;
@@ -90,9 +90,6 @@
 
     function update_example(index, field, value) {
         examples[index][field] = value;
-
-        // For debugging, you can see the updated arrays in the console
-        // console.log('Examples:', examples);
     }
 
     function example_add() {
@@ -115,8 +112,6 @@
 
         examples.push({input: '', output: ''});
         example_count++;
-
-        // console.log('Examples:', examples);
     }
 
     function example_remove() {
@@ -127,7 +122,57 @@
         }
     }
 
-    // Add one example field by default
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    async function on_submit_handler(event) {
+        event.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+
+        const data = {
+            title: document.getElementById('title').value,
+            description: document.getElementById('description').value,
+            example: examples,
+            conditions: conditions,
+            difficulty: document.getElementById('difficulty').value,
+        };
+        try {
+            const response = await fetch('http://127.0.0.1:8000/create_problem/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify(data),
+            })
+            if (response.status === 200) {
+                alert("문제 만들기 성공!");
+                window.history.back();
+            }
+            else if (response.status === 403) {
+                alert("인증 과정에서 문제가 생겼습니다.");
+            }
+            else if (response.status === 500) {
+                alert("서버 에러");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        return false;
+    }
+
     example_add();
 </script>
 {% endblock %}
