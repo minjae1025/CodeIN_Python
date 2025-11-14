@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Solve Problem{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'css/main/solve_problem.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor/min/vs/loader.js"></script>
+{% endblock %}
+
+{% block content %}
+<main id="resize-container">
+    <div class="pane left-pane" id="left-pane">
+        <p class="p_title">{{ problem.title }}</p>
+        <hr>
+        <p class="info_p">문제 설명</p>
+        <p class="p_description">{{ problem.description }}</p>
+        <p class="info_p">문제 조건</p>
+        <div class="conditions_list">
+            <li>
+                {% for item in problem.conditions %}
+                <ul>{{item}}</ul>
+                {% endfor %}
+            </li>
+        </div>
+        <div class="exams_container">
+            <table class="exams_table">
+                <tr>
+                    {% for item in problem.example.variables %}
+                    <th>{{ item }}</th>
+                    {% endfor %}
+                    <th>result</th>
+                </tr>
+                {% for item in problem.example.cases %}
+                    <tr>
+                        {% for value in item.inputs %}
+                        <td>{{ value }}</td>
+                        {% endfor %}
+                        <td>{{ item.output }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <div class="resizer" id="resizer"></div>
+    <div class="pane right-pane" id="right-pane">
+        <div id="monaco" style="width: 100%; height: 100%;"></div>
+    </div>
+</main>
+
+<script>
+    let editor;
+    const parameters = "{{ problem.example.variables | join:', ' }}";
+    console.log(parameters);
+
+    require.config({paths: {'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor/min/vs'}});
+    require(['vs/editor/editor.main'], function () {
+        editor = monaco.editor.create(document.getElementById('monaco'), {
+            theme: 'vs-dark',
+            fontFamily: 'Nanum Gothic Coding',
+            fontSize: '16px',
+            automaticLayout: true,
+            language: 'python',
+            quickSuggestions: true,
+            wordWrap: 'on',
+            minimap: {
+                enabled: false // 코드 전체를 보여주는 미니맵 활성화
+            },
+            value: [
+                `def solution(${parameters}):`,
+                '    answer = 0',
+                '    #코드를 작성해 주세요',
+                '    return answer'
+            ].join('\n')
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const resizer = document.getElementById('resizer');
+        const leftPane = document.getElementById('left-pane');
+        const rightPane = document.getElementById('right-pane');
+        const container = document.getElementById('resize-container');
+
+        let x = 0;
+        let leftWidth = 0;
+
+        const mouseDownHandler = function (e) {
+            // Get the current mouse position
+            x = e.clientX;
+            leftWidth = leftPane.getBoundingClientRect().width;
+
+            // Attach the listeners to the document
+            document.addEventListener('mousemove', mouseMoveHandler);
+            document.addEventListener('mouseup', mouseUpHandler);
+        };
+
+        const mouseMoveHandler = function (e) {
+            // How far the mouse has been moved
+            const dx = e.clientX - x;
+
+            const newLeftWidth = ((leftWidth + dx) * 100) / container.getBoundingClientRect().width;
+            leftPane.style.width = `${newLeftWidth}%`;
+
+            // Prevent panes from collapsing
+            if (newLeftWidth < 20) {
+                leftPane.style.width = '20%';
+            }
+            if (newLeftWidth > 80) {
+                leftPane.style.width = '80%';
+            }
+        };
+
+        const mouseUpHandler = function () {
+            // Remove the handlers
+            document.removeEventListener('mousemove', mouseMoveHandler);
+            document.removeEventListener('mouseup', mouseUpHandler);
+        };
+
+        // Attach the handler
+        resizer.addEventListener('mousedown', mouseDownHandler);
+    });
+</script>
+{% endblock %}

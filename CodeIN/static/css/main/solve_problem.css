@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+main {
+    display: flex;
+    height: calc(100vh - 80px); /* Adjust 56px based on your navbar height */
+    width: 100%;
+    font-family: 'Pretendard', system-ui;
+}
+
+.pane {
+    overflow: auto;
+}
+
+.left-pane {
+    padding: 5px;
+    width: 50%;
+    background-color: #303030;
+    color: #d9d9d9;
+}
+
+.right-pane {
+    flex-grow: 1;
+    background-color: #303030;
+}
+
+.resizer {
+    width: 8px;
+    cursor: ew-resize;
+    background-color: #c1c1c1;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+
+.p_title {
+    font-size: 32px;
+    font-weight: bold;
+    margin: 0;
+}
+
+hr {
+    margin: 5px 0;
+}
+
+.exams_table {
+    background-color: #242424;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border-radius: 10px;
+}
+
+.exams_table td, th {
+    border: 1px solid #ddd;
+    padding: 5px;
+}

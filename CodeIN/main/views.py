@@ -27,3 +27,7 @@ def create_problem(request):
             return JsonResponse({'error': f'Server error: {str(e)}'}, status=500)
         return JsonResponse({'success': True})
     return render(request, 'main/create_problem.html')
+
+def solve_problem(request, problem_id):
+    problem = Problem.objects.get(pk=problem_id)
+    return render(request, 'main/solve_problem.html', {'problem': problem})

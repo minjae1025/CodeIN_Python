@@ -29,20 +29,27 @@
                           required placeholder="예) 다음 배열에서 주어진 n의 갯수를 반환하시오." rows="10"></textarea>
             </div>
             <div class="mb-3 examples_container">
-                <label for="exams_container" class="form-label">예제 입출력</label>
-                <div id="exams_container">
+                <label class="form-label">예제 입출력</label>
+                <div class="variable_container">
+                    <label for="variable_names" class="form-label">변수명 (쉼표로 구분)</label>
+                    <input type="text" class="form-control form_input" id="variable_names" placeholder="예) n, list"
+                           onchange="update_variable_names(this.value)">
                 </div>
-                <div class="exam_btn_container">
-                    <div class="exam_btn">
-                        <button onclick="example_add()" class="button" type="button">예제 추가</button>
+                <div class="exams_container">
+                    <div id="exams_container">
                     </div>
-                    <div class="exam_btn">
-                        <button onclick="example_remove()" class="button" type="button">예제 삭제</button>
+                    <div class="exam_btn_container">
+                        <div class="exam_btn">
+                            <button onclick="example_add()" class="button" type="button">예제 추가</button>
+                        </div>
+                        <div class="exam_btn">
+                            <button onclick="example_remove()" class="button" type="button">예제 삭제</button>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="mb-3">
-                <label for="conditions_container" class="form-label">예제 조건</label>
+                <label for="conditions_container" class="form-label">제약 조건</label>
                 <div id="conditions_container">
                     <textarea name="conditions" id="conditions_input" class="form-control form_input" rows="5"
                               onchange="set_conditions(this.value)"></textarea>
@@ -67,57 +74,111 @@
     </div>
 </main>
 <script>
-    let examples = [];
+    let examples = {
+        variables: [],
+        cases: []
+    };
     let example_count = 0;
     let conditions = [];
 
     const exams_container = document.getElementById('exams_container');
     const conditions_input = document.getElementById('conditions_input');
-    conditions_input.placeholder = "예)\nn은 1 이상의 정수입니다\nlist는 2차원 리스트입니다.";
+    conditions_input.placeholder = "예)\n\nn은 1 이상의 정수입니다\nlist는 2차원 리스트입니다.";
 
     function input_reset() {
-        examples = [];
+        examples = {variables: [], cases: []};
         example_count = 0;
         conditions = [];
+        document.getElementById('variable_names').value = '';
         exams_container.innerHTML = '';
-        example_add();
+        // Do not call example_add() here, let the user add variables first.
     }
 
     function set_conditions(value) {
-        conditions = value.split("\n");
-        console.log(conditions);
+        conditions = value.split("\n").filter(s => s.trim() !== '');
     }
 
-    function update_example(index, field, value) {
-        examples[index][field] = value;
+    function update_variable_names(value) {
+        examples.variables = value.split(',').map(s => s.trim()).filter(s => s !== '');
+        // Re-render examples to reflect new variable names
+        const current_cases = JSON.parse(JSON.stringify(examples.cases));
+        exams_container.innerHTML = '';
+        example_count = 0;
+        examples.cases = [];
+        current_cases.forEach((case_data, index) => {
+            example_add();
+            const case_element = exams_container.children[index];
+            const input_elements = case_element.querySelectorAll('input[name="exam_input"]');
+            examples.variables.forEach((_, var_index) => {
+                if (case_data.inputs[var_index]) {
+                    input_elements[var_index].value = case_data.inputs[var_index];
+                    examples.cases[index].inputs[var_index] = case_data.inputs[var_index];
+                }
+            });
+            const output_element = case_element.querySelector('input[name="exam_output"]');
+            output_element.value = case_data.output;
+            examples.cases[index].output = case_data.output;
+        });
+    }
+
+    function update_example_input(case_index, var_index, value) {
+        if (examples.cases[case_index]) {
+            examples.cases[case_index].inputs[var_index] = value;
+        }
+    }
+
+    function update_example_output(case_index, value) {
+        if (examples.cases[case_index]) {
+            examples.cases[case_index].output = value;
+        }
     }
 
     function example_add() {
+        if (examples.variables.length === 0) {
+            alert("변수명을 먼저 입력해주세요.");
+            return;
+        }
+
         const index = example_count;
         const new_example_pair = document.createElement('div');
         new_example_pair.classList.add('exam-pair');
+
+        let input_fields_html = '';
+        examples.variables.forEach((variable, var_index) => {
+            input_fields_html += `
+                <div class="exam_input mb-2">
+                    <label class="exam-label">입력 : ${variable}</label>
+                    <input type="text" class="form-control form_input" name="exam_input" required onchange="update_example_input(${index}, ${var_index}, this.value)" placeholder="${variable} 값을 입력하세요">
+                </div>
+            `;
+        });
+
         new_example_pair.innerHTML = `
             <label class="exam-label">예제 ${index + 1}</label>
             <div class="exam_fields">
-                <div class="exam_input">
-                    <label class="exam-label">입력</label>
-                    <textarea class="form-control form_input" name="exam_input" required onchange="update_example(${index}, 'input', this.value)" placeholder="예) n = 2\nlist = [[1, 2], [2, 4]]" required></textarea>
+                <div class="exam_inputs_container">
+                    ${input_fields_html}
                 </div>
                 <div class="exam_output">
                     <label class="exam-label">출력</label>
-                    <textarea class="form-control form_input" name="exam_output" required onchange="update_example(${index}, 'output', this.value)" placeholder="2" required></textarea>
+                    <input type="text" class="form-control form_input" name="exam_output" required onchange="update_example_output(${index}, this.value)" placeholder="출력 값을 입력하세요">
+                </div>
             </div>
         `;
         exams_container.appendChild(new_example_pair);
 
-        examples.push({input: '', output: ''});
+        const new_case = {
+            inputs: Array(examples.variables.length).fill(''),
+            output: ''
+        };
+        examples.cases.push(new_case);
         example_count++;
     }
 
     function example_remove() {
         if (exams_container.children.length > 0) {
             exams_container.removeChild(exams_container.lastElementChild);
-            examples.pop();
+            examples.cases.pop();
             example_count--;
         }
     }
@@ -141,6 +202,12 @@
         event.preventDefault();
         const csrftoken = getCookie('csrftoken');
 
+        // Final validation check
+        if (examples.variables.length === 0 && examples.cases.length > 0) {
+            alert("예제에 대한 변수명이 정의되지 않았습니다. 변수명을 입력해주세요.");
+            return false;
+        }
+
         const data = {
             title: document.getElementById('title').value,
             description: document.getElementById('description').value,
@@ -148,6 +215,7 @@
             conditions: conditions,
             difficulty: document.getElementById('difficulty').value,
         };
+
         try {
             const response = await fetch('http://127.0.0.1:8000/create_problem/', {
                 method: 'POST',
@@ -159,20 +227,20 @@
             })
             if (response.status === 200) {
                 alert("문제 만들기 성공!");
-                window.history.back();
-            }
-            else if (response.status === 403) {
+                window.location.href = '/problems/';
+            } else if (response.status === 403) {
                 alert("인증 과정에서 문제가 생겼습니다.");
-            }
-            else if (response.status === 500) {
-                alert("서버 에러");
+            } else if (response.status === 500) {
+                const error_data = await response.json();
+                alert(`서버 에러: ${error_data.error}`);
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
+            alert("요청 중 에러가 발생했습니다.");
         }
         return false;
     }
 
-    example_add();
+    // Do not call example_add() here, let the user add variables first.
 </script>
 {% endblock %}

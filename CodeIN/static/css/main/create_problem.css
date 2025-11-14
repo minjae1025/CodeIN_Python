@@ -60,7 +60,7 @@ main {
     color: #f9f9f9;
 }
 
-#exams_container {
+.exams_container {
     border: 1px solid #888888;
     border-radius: 5px;
     padding: 10px;
@@ -106,3 +106,17 @@ main {
 .form_input::placeholder {
     color: #888888;
 }
+
+.variable_container {
+    border: 1px solid #888888;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 1200px) {
+    main {
+        padding: 0 5px;
+    }
+}
+

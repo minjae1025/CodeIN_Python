@@ -5,7 +5,9 @@
 {% block title %}CodeIN{% endblock %}
 
 {% block extrahead %}
-<link rel="stylesheet" href="{% static 'css/main/problems.css' %}">
+<link rel="stylesheet" href="{% static 'css/main/problems.css' %}" xmlns:th="http://www.w3.org/1999/xhtml">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.16.2/min/vs/loader.js"></script>
+
 {% endblock %}
 
 {% block content %}
@@ -29,7 +31,7 @@
             {% for problem in list %}
                 <tr>
                     <td>{{ problem.id }}</td>
-                    <td>{{ problem.title }}</td>
+                    <td><a href="/problem/{{ problem.pk }}">{{ problem.title }}</a></td>
                     <td>{{ problem.difficulty }}</td>
                     <td>{{ problem.answer_count }}</td>
                 </tr>
