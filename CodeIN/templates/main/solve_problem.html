@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Solve Problem{% endblock %}
+{% block title %}CodeIN - 문제 풀기{% endblock %}
 
 {% block extrahead %}
 <link rel="stylesheet" href="{% static 'css/main/solve_problem.css' %}">
 <script src="https://cdn.jsdelivr.net/npm/monaco-editor/min/vs/loader.js"></script>
+<script src="{% static 'js/cookie.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -32,26 +33,32 @@
                     <th>result</th>
                 </tr>
                 {% for item in problem.example.cases %}
-                    <tr>
-                        {% for value in item.inputs %}
-                        <td>{{ value }}</td>
-                        {% endfor %}
-                        <td>{{ item.output }}</td>
-                    </tr>
+                <tr>
+                    {% for value in item.inputs %}
+                    <td>{{ value }}</td>
+                    {% endfor %}
+                    <td>{{ item.output }}</td>
+                </tr>
                 {% endfor %}
             </table>
         </div>
     </div>
     <div class="resizer" id="resizer"></div>
     <div class="pane right-pane" id="right-pane">
-        <div id="monaco" style="width: 100%; height: 100%;"></div>
+        <div id="monaco" style="width: 100%; height: 92%;"></div>
+        <div class="btn_container">
+            <div class="btn_box">
+                <button class="btn btn-dark problem_btn" onclick="code_run()">실행</button>
+                <button class="btn btn-primary problem_btn">제출 및 채점</button>
+            </div>
+        </div>
     </div>
 </main>
 
 <script>
     let editor;
     const parameters = "{{ problem.example.variables | join:', ' }}";
-    console.log(parameters);
+    // console.log(parameters);
 
     require.config({paths: {'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor/min/vs'}});
     require(['vs/editor/editor.main'], function () {
@@ -120,5 +127,24 @@
         // Attach the handler
         resizer.addEventListener('mousedown', mouseDownHandler);
     });
+
+    async function code_run() {
+        const code = editor.getValue();
+        const csrftoken = getCookie('csrftoken');
+
+        // console.log(code);
+        const response = await fetch("/problem/run_code/", {
+            method: 'POST',
+            headers: {
+                'content-type': "application/json; charset=utf-8",
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({
+                code: code,
+            })
+        })
+        const data = await response.json(); // JSON 형식으로 파싱
+        console.log(data);
+    }
 </script>
 {% endblock %}

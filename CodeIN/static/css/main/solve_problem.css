@@ -13,7 +13,7 @@ main {
 
 .left-pane {
     padding: 5px;
-    width: 50%;
+    width: 45%;
     background-color: #303030;
     color: #d9d9d9;
 }
@@ -53,4 +53,26 @@ hr {
 .exams_table td, th {
     border: 1px solid #ddd;
     padding: 5px;
+}
+
+.header_container {
+    max-width: 100%;
+}
+
+.problem_btn {
+    width: 120px;
+}
+
+.btn_container {
+    padding: 10px;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    height: 8%;
+}
+
+.btn_box {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 10px;
 }
