@@ -5,7 +5,7 @@
 {% block title %}CodeIN{% endblock %}
 
 {% block extrahead %}
-<link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css"/>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>-->
 <link rel="stylesheet" href="{% static 'css/main/index.css' %}">
 {% endblock %}
@@ -27,33 +27,6 @@
         <div class="go_test_container">
             <button onclick="window.location.href = `{% url 'problems' %}`">테스트 하기</button>
         </div>
-
     </div>
-
 </main>
-<!--<script>-->
-<!--    let editor;-->
-
-<!--    require.config({paths: {'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.16.2/min/vs'}});-->
-<!--    require(['vs/editor/editor.main'], function () {-->
-<!--        editor = monaco.editor.create(document.getElementById('monaco'), {-->
-<!--            theme: 'vs-dark',-->
-<!--            fontFamily: 'Nanum Gothic Coding',-->
-<!--            fontSize: '18px',-->
-<!--            automaticLayout: true,-->
-<!--            language: 'python',-->
-<!--            quickSuggestions: true,-->
-<!--            wordWrap: 'on',-->
-<!--            minimap: {-->
-<!--                enabled: false // 코드 전체를 보여주는 미니맵 활성화-->
-<!--            },-->
-<!--            value: [-->
-<!--                'def solution(a, b):',-->
-<!--                '    # 여기에 코드를 작성하세요',-->
-<!--                '    answer = 0',-->
-<!--                '    return answer'-->
-<!--            ].join('\n')-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
 {% endblock %}

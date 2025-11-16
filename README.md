@@ -4,7 +4,6 @@
 ## 라이브러리
 1. Django
 2. mysqlclient
-3. requests
 
 ## 실행 방법
 1. ```cd CodeIN```
