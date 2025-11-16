@@ -1,7 +1,4 @@
-import json
-import os
-import subprocess
-import time
+import json, ast, os, subprocess, time
 
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
@@ -54,67 +51,64 @@ def run_code(request):
             TEMP_DIR = os.path.join(os.getcwd(), "temp_code")  # 프로젝트 루트 기준으로 경로 설정
             os.makedirs(TEMP_DIR, exist_ok=True)  # 디렉터리가 없으면 생성합니다.
 
-            with open(file_path, 'w', encoding='utf8') as f:
-                f.write(code)
-                f.write("\nsolution(2, [[1, 2], [2, 4]])")
+            problem = Problem.objects.filter(id=data['id'])
+            example = problem[0].example
+            cases = (dict(example).get('cases'))
 
-            with open(file_path, 'r', encoding='utf8') as f:
-                print(f.read())
-            try:
-                # 2. subprocess 실행
-                # - `python3` 명령어로 파일을 실행합니다.
-                # - `capture_output=True`로 표준 출력(stdout)과 에러(stderr)를 캡처합니다.
-                # - `text=True`로 출력을 문자열로 처리합니다.
-                # - `timeout`으로 최대 실행 시간을 제한합니다.
+            for case in cases:
+                str_input = case.get('inputs')
+                str_output = case.get('output')
+                py_input = []
+                for item in str_input:
+                    py_input.append(ast.literal_eval(item))
 
-                start_time = time.time()
+                print(input)
+                with open(file_path, 'w', encoding='utf8') as f:
+                    f.write(code)
+                    f.write(f"\nprint(solution({str(py_input)[1:-1]}))")
 
-                result = subprocess.run(
-                    ['python', file_path],
-                    capture_output=True,
-                    text=True,
-                    timeout=timeout_seconds,
-                    check=False  # 에러가 발생해도 예외를 발생시키지 않도록 설정
-                )
+                # with open(file_path, 'r', encoding='utf8') as f:
+                #     print(f.read())
 
-                end_time = time.time()
-                execution_time = end_time - start_time
+                total_result = {}
+                try:
+                    start_time = time.perf_counter()
 
-                # 3. 결과값 추출
-                stdout = result.stdout  # 표준 출력 (성공 시 결과)
-                run_result.append(stdout)
-                stderr = result.stderr  # 표준 에러 (런타임 에러 메시지)
-                return_code = result.returncode  # 프로세스 종료 코드 (0이면 성공)
+                    result = subprocess.run(
+                        ['python', file_path],
+                        capture_output=True,
+                        text=True,
+                        timeout=timeout_seconds,
+                        check=False  # 에러가 발생해도 예외를 발생시키지 않도록 설정
+                    )
 
-                if return_code != 0:
-                    # 실행 에러 (Runtime Error) 발생
-                    test_result = 'Runtime Error'
-                    output_data = stderr
-                else:
-                    # 성공적으로 실행됨
-                    test_result = 'Success'
-                    output_data = stdout.strip()
+                    execution_time = time.perf_counter() - start_time
 
-                print(f"결과: {test_result}")
-                print(f"출력: {output_data}")
-                print(f"실행 시간: {execution_time:.3f} 초")
+                    stdout = result.stdout  # 표준 출력
+                    stderr = result.stderr  # 표준 에러
+                    return_code = result.returncode  # 프로세스 종료 코드
 
-            except subprocess.TimeoutExpired:
-                # 시간 초과 (Time Limit Exceeded)
-                test_result = 'Time Limit Exceeded'
-                print(f"결과: {test_result}")
-            except Exception as e:
-                # 기타 예외 처리 (파일 입출력 문제 등)
-                test_result = f'Execution Failed: {e}'
-                print(f"결과: {test_result}")
-            finally:
-                # 4. 임시 파일 삭제
-                os.remove(file_path) # 실행 후에는 반드시 삭제해야 합니다.
-                pass
+                    if return_code != 0: #런타임 에러시
+                        test_result = -1
+                        # output_data = stderr
+                        output_data = "runtime error"
+                    else:
+                        test_result = 0
+                        output_data = stdout.strip()
 
-            return JsonResponse({'success': True, 'message': 'Code received successfully'})
+                    total_result = {'output': output_data, 'result_code': test_result, 'time': f'{execution_time:.3f}', 'answer': str_output, 'input': str_input}
+                except subprocess.TimeoutExpired:
+                    total_result = {'test_result': 1}
+                except Exception as e:
+                    test_result = f'Execution Failed: {e}'
+                    print(f"결과: {test_result}")
+                finally:
+                    run_result.append([total_result])
+                    os.remove(file_path) # 실행 후 삭제
+                    pass
+            print(run_result)
+            return JsonResponse({'success': True, 'result': run_result})
         except Exception as e:
             print(e)
             return JsonResponse({'error': f'Server processing error: {str(e)}'}, status=500)
-
     return JsonResponse({'error': 'Only POST method'}, status=405)

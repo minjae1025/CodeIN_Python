@@ -20,3 +20,4 @@ class User(AbstractUser):
     )
     nickname = models.CharField(max_length=50, null=True)
     question_count = models.IntegerField(default=0)
+    solved_problem = models.JSONField(default=list)

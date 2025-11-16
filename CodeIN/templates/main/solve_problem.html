@@ -10,47 +10,58 @@
 {% endblock %}
 
 {% block content %}
-<main id="resize-container">
-    <div class="pane left-pane" id="left-pane">
-        <p class="p_title">{{ problem.title }}</p>
-        <hr>
-        <p class="info_p">문제 설명</p>
-        <p class="p_description">{{ problem.description }}</p>
-        <p class="info_p">문제 조건</p>
-        <div class="conditions_list">
-            <li>
-                {% for item in problem.conditions %}
-                <ul>{{item}}</ul>
-                {% endfor %}
-            </li>
+<main>
+    <div id="resize-container" style="height: 92%;">
+        <div class="pane left-pane" id="left-pane" style="height: 100%;">
+            <div class="problem-content">
+                <p class="p_title">{{ problem.title }}</p>
+                <hr>
+                <p class="info_p">문제 설명</p>
+                <p class="p_description">{{ problem.description }}</p>
+                <p class="info_p">문제 조건</p>
+                <div class="conditions_list">
+                    <li>
+                        {% for item in problem.conditions %}
+                        <ul>{{item}}</ul>
+                        {% endfor %}
+                    </li>
+                </div>
+                <div class="exams_container">
+                    <table class="exams_table">
+                        <tr>
+                            {% for item in problem.example.variables %}
+                            <th>{{ item }}</th>
+                            {% endfor %}
+                            <th>result</th>
+                        </tr>
+                        {% for item in problem.example.cases %}
+                        <tr>
+                            {% for value in item.inputs %}
+                            <td>{{ value }}</td>
+                            {% endfor %}
+                            <td>{{ item.output }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
         </div>
-        <div class="exams_container">
-            <table class="exams_table">
-                <tr>
-                    {% for item in problem.example.variables %}
-                    <th>{{ item }}</th>
-                    {% endfor %}
-                    <th>result</th>
-                </tr>
-                {% for item in problem.example.cases %}
-                <tr>
-                    {% for value in item.inputs %}
-                    <td>{{ value }}</td>
-                    {% endfor %}
-                    <td>{{ item.output }}</td>
-                </tr>
-                {% endfor %}
-            </table>
+        <div class="resizer" id="resizer"></div>
+        <div class="pane right-pane" id="right-pane">
+            <div id="monaco" style="width: 100%; height: 65%;"></div>
+            <div class="solution_result_container" id="solution_result_container" style="height: 35%;">
+                <h4>실행 결과</h4>
+                <div style="overflow-y: auto; height: 85%" id="solution_result">
+                    <p>실행 결과가 없습니다.</p>
+                </div>
+            </div>
+
         </div>
     </div>
-    <div class="resizer" id="resizer"></div>
-    <div class="pane right-pane" id="right-pane">
-        <div id="monaco" style="width: 100%; height: 92%;"></div>
-        <div class="btn_container">
-            <div class="btn_box">
-                <button class="btn btn-dark problem_btn" onclick="code_run()">실행</button>
-                <button class="btn btn-primary problem_btn">제출 및 채점</button>
-            </div>
+    <div class="btn_container" style="height: 8%;">
+        <div class="btn_box">
+            <button class="btn btn-dark problem_btn" onclick="code_run()">실행</button>
+            <button class="btn btn-primary problem_btn" onclick="code_submit()">제출 및 채점</button>
         </div>
     </div>
 </main>
@@ -131,8 +142,9 @@
     async function code_run() {
         const code = editor.getValue();
         const csrftoken = getCookie('csrftoken');
+        const result_div = document.getElementById('solution_result');
+        result_div.innerHTML = '<p>실행 중...<p>';
 
-        // console.log(code);
         const response = await fetch("/problem/run_code/", {
             method: 'POST',
             headers: {
@@ -140,11 +152,98 @@
                 'X-CSRFToken': csrftoken
             },
             body: JSON.stringify({
+                id: "{{ problem.id }}",
                 code: code,
             })
         })
         const data = await response.json(); // JSON 형식으로 파싱
         console.log(data);
+
+        if (data.success) {
+            let result_html = '<div class="result_container">';
+            data.result.forEach((item, index) => {
+                const result = item[0];
+                let result_text = '';
+                let result_class = '';
+                if (result.result_code === 0) {
+                    result_text = '실행 성공';
+                    result_class = 'success';
+                } else if (result.result_code === -1) {
+                    result_text = '실행 실패';
+                    result_class = 'fail';
+                } else {
+                    result_text = '시간 초과';
+                    result_class = 'time-out';
+                }
+
+
+                result_html += `
+                    <div class="result_item">
+                        <p>테스트 ${index + 1}: <span class="${result_class}">${result_text}</span></p>
+                        <p>실행 시간: ${result.time*1000}ms</p>
+                        <p>입력값: ${result.input}</p>
+                        <p>기댓값: ${result.answer}</p>
+                        <div class="result_box"><p class="result_box_title">결과: </p><pre class="pre">${result.output}</pre></div>
+                    </div>
+                `;
+            });
+            result_html += '</div>';
+            result_div.innerHTML = result_html;
+        } else {
+            result_div.innerHTML = `<p>${data.error}</p>`;
+        }
+    }
+
+    async function code_submit() {
+        const code = editor.getValue();
+        const csrftoken = getCookie('csrftoken');
+        const result_div = document.getElementById('solution_result');
+        result_div.innerHTML = '<p>채점 중...<p>';
+
+        const response = await fetch("/problem/submit_code/", {
+            method: 'POST',
+            headers: {
+                'content-type': "application/json; charset=utf-8",
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({
+                id: "{{ problem.id }}",
+                code: code,
+            })
+        })
+        const data = await response.json(); // JSON 형식으로 파싱
+        console.log(data);
+
+        if (data.success) {
+            let result_html = '<div class="result_container">';
+            data.result.forEach((item, index) => {
+                const result = item[0];
+                let result_text = '';
+                let result_class = '';
+                if (result.result_code === 0) {
+                    result_text = '통과';
+                    result_class = 'success';
+                } else if (result.result_code === -1) {
+                    result_text = '실패';
+                    result_class = 'fail';
+                } else {
+                    result_text = '시간 초과';
+                    result_class = 'time-out';
+                }
+
+
+                result_html += `
+                    <div class="result_item">
+                        <p>테스트 ${index + 1}: <span class="${result_class}">${result_text}</span></p>
+                        <p>실행 시간: ${result.time*1000}ms</p>
+                    </div>
+                `;
+            });
+            result_html += '</div>';
+            result_div.innerHTML = result_html;
+        } else {
+            result_div.innerHTML = `<p>${data.error}</p>`;
+        }
     }
 </script>
 {% endblock %}
