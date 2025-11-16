@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+main {
+
+    height: calc(100vh - 80px); /* Adjust 56px based on your navbar height */
+    width: 100%;
+    font-family: 'Pretendard', system-ui;
+}
+
+.pane {
+    overflow: auto;
+}
+
+#resize-container {
+    display: flex;
+}
+
+.left-pane {
+    padding: 5px;
+    width: 45%;
+    background-color: #303030;
+    color: #d9d9d9;
+}
+
+.right-pane {
+    flex-grow: 1;
+    background-color: #303030;
+}
+
+.resizer {
+    width: 8px;
+    cursor: ew-resize;
+    background-color: #c1c1c1;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+
+.p_title {
+    font-size: 32px;
+    font-weight: bold;
+    margin: 0;
+}
+
+hr {
+    margin: 5px 0;
+}
+
+.exams_table {
+    background-color: #242424;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border-radius: 10px;
+}
+
+.exams_table td, th {
+    border: 1px solid #ddd;
+    padding: 5px;
+}
+
+.header_container {
+    max-width: 100%;
+}
+
+.problem_btn {
+    width: 120px;
+}
+
+.btn_container {
+    padding: 10px;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+.btn_box {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 10px;
+}
+
+.result_container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.problem-content {
+    margin-bottom: 10px;
+}
+
+.solution_result_container {
+    padding: 10px;
+    color: #d9d9d9;
+}
+
+.result_item {
+    background-color: #242424;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.result_item p {
+    margin: 0;
+}
+
+.result_item pre {
+    width: 90%;
+    margin: 0 0 0 5px;
+    background-color: #1a1a1a;
+    padding: 5px;
+    border-radius: 3px;
+    color: white;
+}
+
+.success {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.fail {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.time-out {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+.result_box {
+    display: flex;
+    align-items: center;
+}

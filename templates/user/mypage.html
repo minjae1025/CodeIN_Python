@@ -1,12 +1,39 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}CodeIN{% endblock %}
 
 {% block extrahead %}
+<link rel="stylesheet" href="{% static 'css/user/mypage.css' %}">
 {% endblock %}
 
 {% block content %}
 <main>
-    <p>마이페이지입니다</p>
+    <div id="container">
+        <div class="mypage_title">
+            <p>마이페이지</p>
+        </div>
+        <div class="mypage_content">
+            <div class="back_btn_box">
+                <button onclick="history.back()" class="back_btn">돌아가기</button>
+            </div>
+            <div class="mypage_info">
+                <div class="mb-3">
+                    <label class="form-label">내 아이디</label>
+                    <input type="text" class="form-control" id="id" value="{{user.username}}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">내 이메일</label>
+                    <input type="email" class="form-control" id="email" value="{{user.email}}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">내 닉네임</label>
+                    <input type="text" class="form-control" id="nickname" value="{{user.nickname}}" readonly>
+                </div>
+                <div class="mb-3">
+                    <button href="#" class="edit_btn btn btn-secondary">수정하기</button>
+                </div>
+        </div>
+    </div>
 </main>
 {% endblock %}
