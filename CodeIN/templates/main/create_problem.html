@@ -15,6 +15,7 @@
         <button onclick="window.history.back()" class="title_btn">돌아가기</button>
         <p>문제 만들기</p>
     </div>
+    <hr style="color: #f9f9f9; margin-top: 0px;">
     <div class="form_container">
         <form method="post" onsubmit="return on_submit_handler(event);">
             {% csrf_token %}
@@ -41,10 +42,10 @@
                     </div>
                     <div class="exam_btn_container">
                         <div class="exam_btn">
-                            <button onclick="example_add()" class="button" type="button">예제 추가</button>
+                            <button onclick="example_add()" class="exam_button" type="button">예제 추가</button>
                         </div>
                         <div class="exam_btn">
-                            <button onclick="example_remove()" class="button" type="button">예제 삭제</button>
+                            <button onclick="example_remove()" class="exam_button" type="button">예제 삭제</button>
                         </div>
                     </div>
                 </div>
@@ -67,7 +68,8 @@
                     <option value="5">5</option>
                 </select>
             </div>
-            <div class="mb-3">
+            <hr style="color: #f9f9f9">
+            <div class="mb-3 end_box">
                 <button class="button" type="submit">완료</button>
                 <button class="button" type="reset" onclick="input_reset()">초기화</button>
             </div>
@@ -84,7 +86,7 @@
 
     const exams_container = document.getElementById('exams_container');
     const conditions_input = document.getElementById('conditions_input');
-    conditions_input.placeholder = "예)\n\nn은 1 이상의 정수입니다\nlist는 2차원 리스트입니다.";
+    conditions_input.placeholder = "예)\nn은 1 이상의 정수입니다\nlist는 2차원 리스트입니다.";
 
     function input_reset() {
         examples = {variables: [], cases: []};
@@ -215,9 +217,14 @@
             if (response.status === 200) {
                 alert("문제 만들기 성공!");
                 window.location.href = '/problems/';
-            } else if (response.status === 403) {
+            }
+            else if (response.status === 400) {
+                alert("잘못된 input이 존재합니다.");
+            }
+            else if (response.status === 403) {
                 alert("인증 과정에서 문제가 생겼습니다.");
-            } else if (response.status === 500) {
+            }
+            else if (response.status === 500) {
                 const error_data = await response.json();
                 alert(`서버 에러: ${error_data.error}`);
             }
