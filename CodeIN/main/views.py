@@ -26,13 +26,15 @@ def create_problem(request):
             if request.META['CONTENT_TYPE'] == "application/json":
                 # print(request.META)
                 data = json.loads(request.body)
-
+                print(data)
                 try:
                     for case in data['example']['cases']:
-                        for item in case:
-                            ast.literal_eval(item)
+                        for item in case['inputs']:
+                            print(item)
+                            temp = ast.literal_eval(item)
                 except Exception as e:
                     print("User Input에 문법 오류")
+                    print(e)
                     return JsonResponse({'success': False}, status=400)
 
                 data['ip'] = request.META['REMOTE_ADDR']
