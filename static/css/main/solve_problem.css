@@ -65,6 +65,17 @@ hr {
 
 .problem_btn {
     width: 120px;
+    height: 40px;
+    border: 1px solid #888888;
+    border-radius: 5px;
+    background-color: #444444;
+    color: #f9f9f9;
+}
+
+.problem_btn:hover {
+    background-color: #555;
+    transition-duration: 0.2s;
+    border: 1.5px solid #888;
 }
 
 .btn_container {
@@ -75,8 +86,7 @@ hr {
 }
 
 .btn_box {
-    display: grid;
-    grid-template-columns: max-content 1fr;
+    display: flex;
     gap: 10px;
 }
 

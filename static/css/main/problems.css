@@ -56,3 +56,26 @@ main {
     font-family: 'Pretendard', system-ui;
     height: 100%;
 }
+
+.problem_id, .problem_difficulty, .problem_answer_count {
+    text-align: center;
+}
+
+.problem_title a {
+    color: #a9b9ff;
+    text-decoration: none;
+}
+
+.problem_tr {
+    height: 40px;
+}
+
+thead {
+    border-bottom: 1px solid #888888;
+}
+
+@media (max-width: 1200px) {
+    main {
+        padding: 5px;
+    }
+}

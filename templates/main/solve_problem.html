@@ -55,13 +55,13 @@
                     <p>실행 결과가 없습니다.</p>
                 </div>
             </div>
-
         </div>
     </div>
     <div class="btn_container" style="height: 8%;">
         <div class="btn_box">
-            <button class="btn btn-dark problem_btn" onclick="code_run()">실행</button>
-            <button class="btn btn-primary problem_btn" onclick="code_submit()">제출 및 채점</button>
+            <button class="problem_btn" onclick="code_reset()">코드 초기화</button>
+            <button class="problem_btn" onclick="code_run()">실행</button>
+            <button class="problem_btn" onclick="code_submit()">제출 및 채점</button>
         </div>
     </div>
 </main>
@@ -69,6 +69,19 @@
 <script>
     let editor;
     const parameters = "{{ problem.example.variables | join:', ' }}";
+    const id = "{{ problem.id }}";
+
+    let code = ''
+    if (localStorage.key(id)) {
+        code = JSON.parse(localStorage.getItem(id)).code;
+    } else {
+        code = [
+            `def solution(${parameters}):`,
+            '    answer = 0',
+            '    #코드를 작성해 주세요',
+            '    return answer'
+        ].join('\n')
+    }
     // console.log(parameters);
 
     require.config({paths: {'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor/min/vs'}});
@@ -84,12 +97,7 @@
             minimap: {
                 enabled: false // 코드 전체를 보여주는 미니맵 활성화
             },
-            value: [
-                `def solution(${parameters}):`,
-                '    answer = 0',
-                '    #코드를 작성해 주세요',
-                '    return answer'
-            ].join('\n')
+            value: code
         });
     });
 </script>
@@ -140,29 +148,15 @@
     });
 
     async function code_run() {
-        const code = editor.getValue();
-        const csrftoken = getCookie('csrftoken');
+        save_code()
         const result_div = document.getElementById('solution_result');
         result_div.innerHTML = '<p>실행 중...<p>';
-
-        const response = await fetch("/problem/run_code/", {
-            method: 'POST',
-            headers: {
-                'content-type': "application/json; charset=utf-8",
-                'X-CSRFToken': csrftoken
-            },
-            body: JSON.stringify({
-                id: "{{ problem.id }}",
-                code: code,
-            })
-        })
-        const data = await response.json(); // JSON 형식으로 파싱
-        console.log(data);
+        const data = await api_request('run_code')
 
         if (data.success) {
             let result_html = '<div class="result_container">';
             data.result.forEach((item, index) => {
-                const result = item[0];
+                const result = item;
                 let result_text = '';
                 let result_class = '';
                 if (result.result_code === 0) {
@@ -180,9 +174,9 @@
                 result_html += `
                     <div class="result_item">
                         <p>테스트 ${index + 1}: <span class="${result_class}">${result_text}</span></p>
-                        <p>실행 시간: ${result.time*1000}ms</p>
+                        <p>실행 시간: ${result.time * 1000}ms</p>
                         <p>입력값: ${result.input}</p>
-                        <p>기댓값: ${result.answer}</p>
+                        <p>기댓값: ${result.answer_value}</p>
                         <div class="result_box"><p class="result_box_title">결과: </p><pre class="pre">${result.output}</pre></div>
                     </div>
                 `;
@@ -195,34 +189,25 @@
     }
 
     async function code_submit() {
-        const code = editor.getValue();
-        const csrftoken = getCookie('csrftoken');
+        save_code()
         const result_div = document.getElementById('solution_result');
         result_div.innerHTML = '<p>채점 중...<p>';
-
-        const response = await fetch("/problem/submit_code/", {
-            method: 'POST',
-            headers: {
-                'content-type': "application/json; charset=utf-8",
-                'X-CSRFToken': csrftoken
-            },
-            body: JSON.stringify({
-                id: "{{ problem.id }}",
-                code: code,
-            })
-        })
-        const data = await response.json(); // JSON 형식으로 파싱
-        console.log(data);
+        const data = await api_request('submit_code')
 
         if (data.success) {
             let result_html = '<div class="result_container">';
             data.result.forEach((item, index) => {
-                const result = item[0];
+                const result = item;
                 let result_text = '';
                 let result_class = '';
                 if (result.result_code === 0) {
-                    result_text = '통과';
-                    result_class = 'success';
+                    if (result.answer) {
+                        result_text = '통과';
+                        result_class = 'success';
+                    } else {
+                        result_text = '오답';
+                        result_class = 'fail';
+                    }
                 } else if (result.result_code === -1) {
                     result_text = '실패';
                     result_class = 'fail';
@@ -235,14 +220,49 @@
                 result_html += `
                     <div class="result_item">
                         <p>테스트 ${index + 1}: <span class="${result_class}">${result_text}</span></p>
-                        <p>실행 시간: ${result.time*1000}ms</p>
+                        <p>실행 시간: ${result.time * 1000}ms</p>
                     </div>
                 `;
             });
             result_html += '</div>';
             result_div.innerHTML = result_html;
+
+            if (data.pass) {
+                alert("통과! 정답입니다!")
+            }
         } else {
             result_div.innerHTML = `<p>${data.error}</p>`;
+        }
+    }
+
+    async function api_request(type) {
+        const code = editor.getValue();
+        const csrftoken = getCookie('csrftoken');
+        const response = await fetch(`/problem/${type}/`, {
+            method: 'POST',
+            headers: {
+                'content-type': "application/json; charset=utf-8",
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({
+                id: "{{ problem.id }}",
+                code: code,
+            })
+        })
+        return await response.json();
+    }
+
+    function save_code() {
+        const code = editor.getValue();
+        const id = "{{ problem.id }}"
+        localStorage.setItem(id, JSON.stringify({code: code}));
+    }
+
+    function code_reset() {
+        if (confirm("정말 초기화하시겠습니까?")) {
+            const id = "{{ problem.id }}"
+            localStorage.removeItem(id)
+            window.location.reload();
         }
     }
 </script>

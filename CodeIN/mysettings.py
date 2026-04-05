@@ -3,7 +3,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'codein',
         'USER' : 'py_project',
-        'PASSWORD' : '1111', # 설정한 비밀번호로 적어주면 된다.
+        'PASSWORD' : '1111',
         'HOST' : '127.0.0.1',
         'PORT' : '3306',
     }

@@ -1,12 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 main {
-    background-color: #242424;
+    font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+    height: 100%;
+    background: linear-gradient(-45deg, #23a6d5, #23d5ab, #242424, #3f51b5);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .title_container {
     text-align: center;
-    padding: 20px;
+    padding: 40px 20px; /* Increased padding */
+    background: rgba(0, 0, 0, 0.2); /* Semi-transparent background */
+    border-radius: 15px; /* Rounded corners */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+    backdrop-filter: blur(5px); /* Frosted glass effect */
+    -webkit-backdrop-filter: blur(5px); /* For Safari */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin: 0 20px; /* Add margin to not stick to edges */
 }
 
 .title_text {
@@ -35,10 +58,19 @@ main {
 
 .subtitle_text {
     font-size: 36px;
+    color: #b0b0b0; /* Lighter gray for subtitle */
+    margin-top: 10px;
 }
 
 .main_container {
-
+    padding: 40px; /* Add padding */
+    margin: 20px; /* Add margin */
+    background: rgba(0, 0, 0, 0.2); /* Semi-transparent background */
+    border-radius: 15px; /* Rounded corners */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+    backdrop-filter: blur(5px); /* Frosted glass effect */
+    -webkit-backdrop-filter: blur(5px); /* For Safari */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 .show_question_count {
@@ -56,23 +88,29 @@ main {
 .show_question_count p {
     color: #f9f9f9;
     margin: 0;
+    font-size: 20px; /* Increased font size */
+    margin-top: 20px; /* Added top margin */
 }
 
 .go_test_container button {
-    margin-top: 10px;
-    width: 200px;
-    height: 50px;
-    border: 1px solid #e1e1e1;
-    border-radius: 5px;
-    background: #444444;
+    margin-top: 30px; /* Increased margin for better separation */
+    width: 220px; /* Slightly wider button */
+    height: 60px; /* Taller button */
+    border: none; /* Remove default border */
+    border-radius: 8px; /* More rounded corners */
+    background: #007bff; /* Primary blue color */
     color: #fff;
+    font-size: 20px; /* Larger font size */
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease; /* Smooth transition for hover effect */
 }
 
-main {
-    font-family: 'Pretendard', system-ui;
-    background-color: #242424;
-    height: 100%;
+.go_test_container button:hover {
+    background: #0056b3; /* Darker blue on hover */
 }
+
+
 
 @media (max-width: 1200px) {
     main {

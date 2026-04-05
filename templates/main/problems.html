@@ -29,11 +29,11 @@
             </thead>
             <tbody>
             {% for problem in list %}
-                <tr>
-                    <td>{{ problem.id }}</td>
-                    <td><a href="/problem/{{ problem.pk }}">{{ problem.title }}</a></td>
-                    <td>{{ problem.difficulty }}</td>
-                    <td>{{ problem.answer_count }}</td>
+                <tr class="problem_tr">
+                    <td class="problem_id">{{ problem.id }}</td>
+                    <td class="problem_title"><a href="/problem/{{ problem.pk }}">{{ problem.title }}</a></td>
+                    <td class="problem_difficulty">{{ problem.difficulty }}</td>
+                    <td class="problem_answer_count">{{ problem.answer_count }}</td>
                 </tr>
             {% endfor %}
             </tbody>
